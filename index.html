@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101310">
+  <meta name="description" content="Metrónomo online con tempo, subdivisiones, sonidos, paneo estéreo y tap tempo.">
+  <title>Ritmo — Metrónomo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Ritmo, inicio"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>ritmo<span class="brand-dot">.</span></a>
+      <div class="live-indicator"><span class="status-dot" id="statusDot"></span><span id="statusText">LISTO PARA TOCAR</span></div>
+    </header>
+
+    <section class="workspace" aria-label="Controles del metrónomo">
+      <div class="instrument">
+        <div class="eyebrow"><span class="eyebrow-line"></span> TU PULSO, A TU MANERA</div>
+        <h1>Encuentra<br>tu <em>ritmo.</em></h1>
+        <p class="intro">Un metrónomo sencillo para mantenerte en el compás. Ajusta, escucha y toca.</p>
+
+        <div class="tempo-panel">
+          <div class="tempo-head">
+            <label for="tempoInput">TEMPO</label>
+            <span class="tempo-unit">BPM</span>
+          </div>
+          <div class="tempo-readout">
+            <button class="step-button" id="tempoDown" aria-label="Bajar tempo 1 BPM">−</button>
+            <div class="tempo-number-wrap"><input id="tempoInput" class="tempo-number" type="number" min="30" max="300" value="120" aria-label="Tempo en pulsos por minuto"><span class="tempo-caption">pulsos por minuto</span></div>
+            <button class="step-button" id="tempoUp" aria-label="Subir tempo 1 BPM">+</button>
+          </div>
+          <input id="tempoSlider" class="range tempo-range" type="range" min="30" max="300" value="120" aria-label="Ajustar tempo">
+          <div class="range-ends"><span>30</span><span>300</span></div>
+        </div>
+
+        <button id="playButton" class="play-button" aria-label="Iniciar metrónomo">
+          <span class="play-icon" id="playIcon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.8c0-.77.84-1.25 1.5-.86l9.15 5.34a1 1 0 0 1 0 1.72L9.5 17.34c-.66.39-1.5-.09-1.5-.86V5.8Z"/></svg></span>
+          <span id="playLabel">Empezar</span><span class="play-shortcut">ESPACIO</span>
+        </button>
+        <button id="tapButton" class="tap-button"><span class="tap-icon" aria-hidden="true">↗</span> TAP TEMPO <span class="tap-hint">T</span></button>
+        <p class="tap-note" id="tapNote" aria-live="polite">Toca al ritmo de la canción para calcular el tempo</p>
+      </div>
+
+      <div class="visualizer-panel">
+        <div class="panel-top"><div class="panel-title">PULSO EN VIVO <span class="live-pill"><i></i> LIVE</span></div><div class="beat-count"><span id="beatDisplay">—</span><small id="measureDisplay">/ 4</small></div></div>
+        <div class="visualizer" id="visualizer" aria-label="Visualizador de pulsos" role="img">
+          <div class="visualizer-grid"></div>
+          <div class="beat-orb" id="beatOrb"><span></span><i></i></div>
+          <div class="visualizer-labels"><span>UNO</span><span>DOS</span><span>TRES</span><span>CUATRO</span></div>
+        </div>
+        <div class="control-grid">
+          <section class="control-card">
+            <div class="control-heading"><div><span class="control-icon">◉</span><h2>Subdivisión</h2></div><span class="control-value" id="subdivisionValue">NEGRAS</span></div>
+            <div class="segmented" role="group" aria-label="Subdivisión del metrónomo">
+              <button class="segment selected" data-subdivision="1" aria-pressed="true">♩<span>Negras</span></button>
+              <button class="segment" data-subdivision="2" aria-pressed="false">♫<span>Corcheas</span></button>
+              <button class="segment" data-subdivision="4" aria-pressed="false">♬<span>Semicorcheas</span></button>
+            </div>
+          </section>
+
+          <section class="control-card">
+            <div class="control-heading"><div><span class="control-icon">◖</span><h2>Sonido</h2></div></div>
+            <div class="sound-options" role="group" aria-label="Sonido del metrónomo">
+              <button class="sound-option selected" data-sound="studio" aria-pressed="true"><span class="sound-swatch studio-swatch"></span>Estudio</button>
+              <button class="sound-option" data-sound="digital" aria-pressed="false"><span class="sound-swatch digital-swatch"></span>Digital</button>
+              <button class="sound-option" data-sound="soft-sine" aria-pressed="false"><span class="sound-swatch soft-swatch"></span>Suave · Seno</button>
+              <button class="sound-option" data-sound="soft-bell" aria-pressed="false"><span class="sound-swatch soft-swatch"></span>Suave · Cálido</button>
+            </div>
+            <label class="accent-toggle"><input id="accentToggle" type="checkbox"><span class="toggle-track" aria-hidden="true"></span><span>Acento en el primer pulso</span></label>
+          </section>
+
+          <section class="control-card">
+            <div class="control-heading"><div><span class="control-icon">◧</span><h2>Paneo</h2></div><span class="control-value" id="panValue">CENTRO</span></div>
+            <div class="pan-control"><span>L</span><input id="panSlider" class="range" type="range" min="-100" max="100" value="0" aria-label="Paneo de izquierda a derecha"><span>R</span></div>
+            <div class="pan-caption"><span>Izquierda</span><span>Derecha</span></div>
+          </section>
+
+          <section class="control-card">
+            <div class="control-heading"><div><span class="control-icon">◖))</span><h2>Volumen</h2></div><span class="control-value" id="volumeValue">75%</span></div>
+            <div class="volume-control"><button id="muteButton" class="mute-button" aria-label="Silenciar" title="Silenciar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 4 5 6m0-6-5 6"/></svg></button><input id="volumeSlider" class="range" type="range" min="0" max="100" value="75" aria-label="Volumen"><span class="volume-max">100</span></div>
+          </section>
+        </div>
+        <div class="panel-footer"><span>AFINA LOS DETALLES. SIGUE EL PULSO.</span><span class="footer-mark">R<span>·</span></span></div>
+      </div>
+    </section>
+    <footer class="page-footer"><span>HECHO PARA TOCAR.</span><span>RESPIRA · ESCUCHA · TOCA</span></footer>
+  </main>
+</body>
+</html>
+
